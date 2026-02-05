@@ -48,6 +48,16 @@ HAL_SD_WriteBlocks_DMA(SD_HandleTypeDef *hsd, uint8_t *pData, uint32_t BlockAdd,
 第一个参数SD的总控结构体，第二个参数发送数据的指针
 第三个参数是块地址（0也就是SD的第一个块），第四个是块数量（也就是写入的块的数量）
 
+ HAL_SD_GetCardInfo 函数 
+ 这个函数可以获取SD卡的相关信息
+
+
+
+
+
+我们直接调用这两个函数就可以对SD卡进行读写了，因为现在没有文件系统
+等到上文件系统的时候，我们就能对文件进行读写并且管理。
+
 
 
 

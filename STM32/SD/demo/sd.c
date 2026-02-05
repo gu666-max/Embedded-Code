@@ -101,10 +101,10 @@ void HAL_SD_MspInit(SD_HandleTypeDef *hsd)
 }
 
 
-uint8_t sd_read(uint8_t *pbuffer)
+uint8_t sd_read(uint8_t *pbuffer,uint32_t BlockAddr, uint32_t NumberOfBlocks)
 {
 
-	if(HAL_SD_ReadBlocks(&SD_HandleStruct,pbuffer,3000,1,2000)!=HAL_OK)
+	if(HAL_SD_ReadBlocks_DMA(&SD_HandleStruct,pbuffer,BlockAddr,NumberOfBlocks)!=HAL_OK)
 		return 1;
 
 	
@@ -112,48 +112,19 @@ uint8_t sd_read(uint8_t *pbuffer)
 }
 
 
-uint8_t sd_write(uint8_t *pbuffer)
+uint8_t sd_write(uint8_t *pbuffer,uint32_t BlockAddr, uint32_t NumberOfBlocks)
 {
 
-	
-	
-	
-	while(HAL_SD_GetCardState(&SD_HandleStruct)!=HAL_SD_CARD_TRANSFER);
-
-	
-	
-	int a=HAL_SD_WriteBlocks(&SD_HandleStruct,pbuffer,3000,1,10000);
 
 	while(HAL_SD_GetCardState(&SD_HandleStruct)!=HAL_SD_CARD_TRANSFER);
+	
+	
+	int a=HAL_SD_WriteBlocks_DMA(&SD_HandleStruct,pbuffer,BlockAddr,NumberOfBlocks);
 
+	while(HAL_SD_GetCardState(&SD_HandleStruct)!=HAL_SD_CARD_TRANSFER);
+	
 	return a;
 		
-}
-
-
-// 读单扇区
-uint8_t sd1_read(uint32_t sector, uint8_t *pbuffer)
-{
-    for(int i = 0; i < 5; i++)
-    {
-        if(HAL_SD_WriteBlocks_DMA(&SD_HandleStruct, pbuffer, sector, 1) == HAL_OK)
-            return 0;
-    }
-    return 1; // 读失败
-}
-
-// 写单扇区，自动重试
-uint8_t sd1_write(uint32_t sector, uint8_t *pbuffer)
-{
-    for(int i = 0; i < 5; i++)
-    {
-        if(HAL_SD_ReadBlocks_DMA(&SD_HandleStruct, pbuffer, sector, 1) == HAL_OK)
-        {
-
-        }
-        HAL_Delay(10); // 等 SD 卡空闲
-    }
-    return 1; // 写失败
 }
 
 
